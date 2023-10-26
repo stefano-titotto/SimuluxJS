@@ -6,13 +6,15 @@
     <title>Create Image from Array</title>
 </head>
 <body>
-
-    <input type="number" id="slabWidthInput" placeholder="larghezza (cm)">
-    <input type="number" id="slabLengthInput" placeholder="lunghezza (cm)">
-    <input type="number" id="headSizeInput" placeholder="raggio est (cm)">
-    <input type="number" id="raggioIntInput" placeholder="raggio int (cm)">
-    <button id="calcola" onclick="calcola()">Calcola()</button>
+    <table>
+    <tr><th>larghezza (cm)</th><th><input type="number" id="slabWidthInput" value="160"></th></tr>
+    <tr><th>lunghezza (cm)</th><th><input type="number" id="slabLengthInput"  value="320"></th></tr>
+    <tr><th>raggio est (cm)</th><th><input type="number" id="headSizeInput" value="55"></th></tr>
+    <tr><th>raggio int (cm)</th><th><input type="number" id="raggioIntInput" value="20"></th></tr>
+    </table>
     <br>
+    <button id="calcola" onclick="calcola()">Calcola()</button>
+
     <div id="mappa" style="position: relative; width: 100%;"></div>
     <script src="simulux.js"></script>
 </body>

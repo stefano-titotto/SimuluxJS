@@ -9,10 +9,10 @@ class CParametri {
     }
 
     aggiorna() {
-        this.L = document.getElementById("slabLengthInput").value;
-        this.W = document.getElementById("slabWidthInput").value;
-        this.DimTesta = document.getElementById("headSizeInput").value;
-        this.RaggioInt = document.getElementById("raggioIntInput").value;
+        this.L = parseInt(document.getElementById("slabLengthInput").value);
+        this.W = parseInt(document.getElementById("slabWidthInput").value);
+        this.DimTesta = parseInt(document.getElementById("headSizeInput").value);
+        this.RaggioInt = parseInt(document.getElementById("raggioIntInput").value);
     }
 }
 
@@ -30,9 +30,9 @@ function somma( mat1, mat2, x, y, L, W, DimTesta ){
     let e2y = Math.min(DimTesta, e1y-y);
     let e2x = Math.min(DimTesta, e1x-x);
 
-    for (let i = s2x; i< e2x; i++){
-        for (let j = s2y; j < e2y; j++){
-            mat1[s1x+i][s1y+j] += mat2[i][j];
+    for (let i = 0; i< e2x-s2x; i++){
+        for (let j = 0; j < e2y-s2y; j++){
+            mat1[s1x+i][s1y+j] += mat2[s2x+i][s2y+j];
         }
     }
 }
@@ -74,18 +74,31 @@ function calcola(){
 	// start time
 	const start = Date.now();
 	let cnt = 0;
-	for ( let x = 10; x < W-DimTesta-10; x++){
-		for (let y =10; y < L-DimTesta-10; y++){
-		    somma(lastra, testa, [x, y], DimTesta);
-		    cnt++;
-		}
-        x++;
-		for (let y = L-DimTesta-10; y > 10; y--){
-		    somma(lastra, testa, x,  y, L, W, DimTesta);
-		    cnt++;
-		}
-	}
-	// stop time
+    let ut = 10;
+    let x0 = -ut ;
+    let y0 = -DimTesta; // inizia con la testa tutta fuori dalla lastra
+    let Cx = W - DimTesta + 2 * ut;
+
+    let X = [];
+    
+    for (let k = x0; k< x0+Cx; k++) {
+        X.push(k);
+    }
+    for (let k = x0 + Cx; k > x0; k--) {
+        X.push(k);
+    }
+    
+    console.log(X.length);
+    let x = X[0];
+    let y = y0;
+
+    
+    for (let k=0; y < L; k = (k+1) % X.length){ //y < L+DimTesta
+        console.log("k = "+k+", x = "+ x + ", y = "+y)
+        somma(lastra, testa, x, y, L, W, DimTesta );
+        x = X[k];
+        y++;
+    }
 	const elapsed = Date.now() - start;
 
 	// visualizza

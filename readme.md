@@ -34,4 +34,11 @@ oggetto "parametri" che viene aggiornato e passato a calcola alla pressione del 
 
 - default dimensioni lastra
 - maschera immissione parametri (wireframe)
-- 
+
+## Simulux
+### 26/10/2023 
+- Sistemato problemi su somma
+- testato semplice movimento lineare
+
+implementare vel_x, vel_y
+calcolare vettore X sinusoidale date le battute al minuto
