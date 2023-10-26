@@ -74,18 +74,33 @@ function calcola(){
 	// start time
 	const start = Date.now();
 	let cnt = 0;
-    let ut = 10;
+    let ut = 3;
     let x0 = -ut ;
     let y0 = -DimTesta; // inizia con la testa tutta fuori dalla lastra
     let Cx = W - DimTesta + 2 * ut;
 
+    // tempo di simulazione
+    let sg = 6;
+    let rpm = 330;
+    let dt = 60 / rpm /sg;
+
+    console.log("Intervallo di simulazione = "+(dt*1000).toFixed(1) + " ms")
+
+    // implementazione velocità y
+    let Vn = 1. *100/60; // Velocità y, velocità nastro in cm/s
+    let dy = Vn * dt; //incremento nel dt
+
+
+    // implementazione velocità x a rampa sinusoidale
     let X = [];
+
+    let bpm = 12; // battute complete al minuto
+
+    let f = bpm/60; // frequenza oscillazione trave
+    let n = Math.round(1/f/dt); // lunghezza del vettore di posizione x
     
-    for (let k = x0; k< x0+Cx; k++) {
-        X.push(k);
-    }
-    for (let k = x0 + Cx; k > x0; k--) {
-        X.push(k);
+    for (let k = 0; k < n; k++) {
+        X.push( x0 + Math.round(Cx/2 * (1 - Math.cos(2*Math.PI*f*k*dt))));
     }
     
     console.log(X.length);
@@ -94,10 +109,10 @@ function calcola(){
 
     
     for (let k=0; y < L; k = (k+1) % X.length){ //y < L+DimTesta
-        console.log("k = "+k+", x = "+ x + ", y = "+y)
-        somma(lastra, testa, x, y, L, W, DimTesta );
+        //console.log("k = "+k+", x = "+ x + ", y = "+y)
+        somma(lastra, testa, x, Math.round(y), L, W, DimTesta );
         x = X[k];
-        y++;
+        y += dy;
     }
 	const elapsed = Date.now() - start;
 

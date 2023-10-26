@@ -40,5 +40,5 @@ oggetto "parametri" che viene aggiornato e passato a calcola alla pressione del 
 - Sistemato problemi su somma
 - testato semplice movimento lineare
 
-implementare vel_x, vel_y
-calcolare vettore X sinusoidale date le battute al minuto
+- implementare vel_x, vel_y
+- calcolare vettore X sinusoidale date le battute al minuto
