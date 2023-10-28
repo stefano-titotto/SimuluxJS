@@ -6,6 +6,7 @@
     <title>Create Image from Array</title>
 </head>
 <body>
+    <form name="formParametri" method="GET" action="calcola(this.form)">
     <table>
     <tr><th>larghezza (cm)</th><th><input type="number" id="slabWidthInput" value="160"></th></tr>
     <tr><th>lunghezza (cm)</th><th><input type="number" id="slabLengthInput"  value="320"></th></tr>
@@ -13,7 +14,8 @@
     <tr><th>raggio int (cm)</th><th><input type="number" id="raggioIntInput" value="20"></th></tr>
     </table>
     <br>
-    <button id="calcola" onclick="calcola()">Calcola()</button>
+    <button id="calcola" onclick="calcola(this.form)">Calcola()</button>
+    </form>
 
     <div id="mappa" style="position: relative; width: 100%;"></div>
     <script src="simulux.js"></script>
