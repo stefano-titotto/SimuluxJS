@@ -8,11 +8,11 @@ class CParametri {
         this.RaggioInt = 0;
     }
 
-    aggiorna() {
-        this.L = parseInt(document.getElementById("slabLengthInput").value);
-        this.W = parseInt(document.getElementById("slabWidthInput").value);
-        this.DimTesta = parseInt(document.getElementById("headSizeInput").value);
-        this.RaggioInt = parseInt(document.getElementById("raggioIntInput").value);
+    aggiorna(form) {
+        this.L = parseInt(form.slabLengthInput.value);
+        this.W = parseInt(form.slabWidthInput.value);
+        this.DimTesta = parseInt(form.headSizeInput.value);
+        this.RaggioInt = parseInt(form.raggioIntInput.value);
     }
 }
 
@@ -43,8 +43,8 @@ function lastra_reset(lastra){
     }
 }
 
-function calcola(){
-    params.aggiorna();
+function calcola(form){
+    params.aggiorna(form);
     let L = params.L;
     let W = params.W;
     let DimTesta = params.DimTesta;
