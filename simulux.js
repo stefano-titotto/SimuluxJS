@@ -218,15 +218,6 @@ function costruisciForm(params){
         cella.innerHTML = key;
         cella = riga.insertCell();
         cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"></input>';
-        
-        // aggiungi un listener per aggiornamento automatico
-        let qInput =  document.getElementById(key);
-        qInput.addEventListener("input", function() {
-            // Automatically update the form when the input changes
-            Parametri.aggiorna(document.getElementById("formParametri").elements);
-            let searchString = Parametri.scriviUrlParams();
-            window.location.search = searchString;
-          });
     }
 
 }
