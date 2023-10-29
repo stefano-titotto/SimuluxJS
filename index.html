@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
      <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
-    <title>Create Image from Array</title>
+    <title>Simulux</title>
 </head>
 <body>
 <header>Simulux</header>
     <div id="mappa" style="position: relative; width: 100%;"></div>
-    <form id="formParametri" name="formParametri" onsubmit="calcola()">
-    <table>
-    <tr><td>larghezza (cm)</td><td><input type="number" id="slabWidthInput" value="160"></td></tr>
-    <tr><td>lunghezza (cm)</td><td><input type="number" id="slabLengthInput"  value="320"></td></tr>
-    <tr><td>diametro est (cm)</td><td><input type="number" id="headSizeInput" value="55"></td></tr>
-    <tr><td>diametro int (cm)</td><td><input type="number" id="diamIntInput" value="20"></td></tr>
+    <form id="formParametri" name="formParametri" onsubmit="">
+    <table id="myTable">
+        <tbody id="tableBody">
+        </tbody>    
     </table>
     <br>
     <input type="submit" value="Aggiorna">

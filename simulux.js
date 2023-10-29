@@ -1,22 +1,76 @@
 
-// visualizza immagine con cv.imshow
+/*
+
+*/
+
+// valori di default
+const parametriDefault = {
+    "L": 320,
+    "W": 160,
+    "DimTesta": 56,
+    "Utensile": 15,
+    "Uscita": 3,
+    "SG": 6,
+    "rpmTesta": 330,
+    "bpmTrave": 12.5,
+    "velNastro": 1.0,
+}
+
+const parametriStep = {
+    "L": 1,
+    "W": 1,
+    "DimTesta": 1,
+    "Utensile": 1,
+    "Uscita": 1,
+    "SG": 2,
+    "rpmTesta": 1,
+    "bpmTrave": .1,
+    "velNastro": .05,
+}
+
 class CParametri {
-    constructor (){
-        this.L = 0;
-        this.W = 0;
-        this.DimTesta = 0;
-        this.DiamInt = 0;
+    constructor (def){
+        this.params = {};
+        for (let key in def){
+            this.params[key] = def[key];
+        }
     }
 
     aggiorna(formElems) {
-        this.L = parseInt(formElems.slabLengthInput.value);
-        this.W = parseInt(formElems.slabWidthInput.value);
-        this.DimTesta = parseInt(formElems.headSizeInput.value);
-        this.DiamInt = parseInt(formElems.diamIntInput.value);
+        for (let k=0; k<formElems.length; k++){
+            if (formElems[k].id === ''){continue;}
+            let val = formElems[k].value;
+            val.replace(',','.')
+            // inserire controllo numero
+            if (isNaN(val)){
+                alert("Errore input in "+formElems[k].id);
+            }
+            this.params[formElems[k].id] = val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val);
+        }
+
+    }
+    leggiUrl(){
+        let ricerca = window.location.search.substring(1);
+        console.log(ricerca);
+        for(let elem of ricerca.split('&')){
+            let item = elem.split('=');
+            let key = item[0];
+            let val = item[1];
+            console.log(key + ": "+ val);
+            // memorizza i valori con il tipo corretto: string, int o float
+            this.params[key] = isNaN(val) ? val : (val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val));
+
+        }
+        return this.params
+    }
+    scriviUrlParams(){
+        let stringa = "?";
+        for(let key in this.params){
+            stringa += key + "=" + this.params[key] + "&";
+        }
+        return stringa.slice(0,-1);
     }
 }
-
-const params = new CParametri();
 
 function somma( mat1, mat2, x, y, L, W, DimTesta ){
 
@@ -43,34 +97,28 @@ function lastra_reset(lastra){
     }
 }
 
-function calcola(){
-    let myform = document.getElementById("formParametri");
-    params.aggiorna(myform.elements);
+function calcola(params){
     let L = params.L;
     let W = params.W;
     let DimTesta = params.DimTesta;
-    let DiamInt = params.DiamInt;
+    let DiamInt = DimTesta - 2 * params.Utensile;
     let centro = Math.trunc(DimTesta/2);
-    let ut = 3;
+    let ut = params.Uscita;
     let x0 = -ut ;
     let y0 = -DimTesta; // inizia con la testa tutta fuori dalla lastra
     let Cx = W - DimTesta + 2 * ut;
 
     // tempo di simulazione
-    let sg = 6;
-    let rpm = 330;
-    let dt = 60 / rpm /sg;
+    let dt = 60 / params.rpmTesta /params.SG;
 
     console.log("Intervallo di simulazione = "+(dt*1000).toFixed(1) + " ms")
 
-    let Vn = 1. *100/60; // Velocità y, velocità nastro in cm/s
+    let Vn = params.velNastro *100/60; // Velocità y, velocità nastro m/min -> cm/s
  
     // implementazione velocità y
     let dy = Vn * dt; //incremento nel dt
 
-    let bpm = 12; // battute complete al minuto
-
-    let f = bpm/60; // frequenza oscillazione trave
+    let f = params.bpmTrave/60; // frequenza oscillazione trave
 
     // Crea nuova lastra
     const lastra = new Array(W);
@@ -124,11 +172,11 @@ function calcola(){
     console.log('Performance : '+ Math.round(cnt*1000/elapsed) + ' cicli/s');
 
     delete testa;
-    visualizza_mappa(lastra);	
+    visualizza_mappa(lastra,params.L, params.W);	
     console.log("calcolato!");
 }
 
-function visualizza_mappa(lastra){
+function visualizza_mappa(lastra, L, W){
     MAPPA = document.getElementById("mappa");
 
     var dati = [
@@ -140,19 +188,19 @@ function visualizza_mappa(lastra){
     ];
 
     Plotly.newPlot(MAPPA, dati);
-    proporziona_finestra();
+    proporziona_finestra(L,W);
     console.log("visualizzato!");
 }
 
 window.addEventListener('resize', proporziona_finestra);
 
-function proporziona_finestra(){
+function proporziona_finestra(L, W){
 // Retrieve the container element
   const chartContainer = document.getElementById('mappa');
 
   // Calculate the new width and height based on the aspect ratio
   const containerWidth = chartContainer.offsetWidth;
-  const newHeight = Math.round(containerWidth/ params.L * params.W * 1.2);
+  const newHeight = Math.round(containerWidth/ L * W * 1.2);
   console.log("W = " + containerWidth + ", H = " + newHeight);
 
   // Update the Plotly chart size
@@ -162,4 +210,51 @@ function proporziona_finestra(){
   });
 };
 
-calcola();
+function costruisciForm(params){
+    let TableBody = document.getElementById("tableBody");
+    for (let key in params){
+        let riga = TableBody.insertRow();
+        let cella = riga.insertCell();
+        cella.innerHTML = key;
+        cella = riga.insertCell();
+        cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"></input>';
+        
+        // aggiungi un listener per aggiornamento automatico
+        let qInput =  document.getElementById(key);
+        qInput.addEventListener("input", function() {
+            // Automatically update the form when the input changes
+            Parametri.aggiorna(document.getElementById("formParametri").elements);
+            let searchString = Parametri.scriviUrlParams();
+            window.location.search = searchString;
+          });
+    }
+
+}
+
+document.getElementById("formParametri").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    Parametri.aggiorna(this.elements);
+    let searchString = Parametri.scriviUrlParams();
+    window.location.search = searchString;
+});
+/* 
+area che viene eseguita all'apertura della pagina
+
+Quando apro l'url generale, 
+se non c'è la stringa di ricerca -> carica i parametri di default e richiama l'url
+altrimenti -> leggi i parametri e simula
+
+Poi ad ogni aggiornamento del form aggiorna Url search e simulazione.
+*/
+var Parametri = new CParametri({});
+
+if (window.location.search === ''){
+    Parametri = new CParametri(parametriDefault);
+    let searchString = Parametri.scriviUrlParams();
+    window.location.search = searchString;
+}
+else{
+    Parametri.leggiUrl();
+    costruisciForm(Parametri.params);
+    calcola(Parametri.params);
+}

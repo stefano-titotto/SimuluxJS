@@ -47,10 +47,15 @@ oggetto "parametri" che viene aggiornato e passato a calcola alla pressione del 
 
 ### 29-10-2023
 
- creare oggetto con tutti i parametri
- creazione URL+parametri
- lettura parametri da URL
+- creare oggetto con tutti i parametrit
+- creazione URL+parametri
+- lettura parametri da URL
 
+Quando apro l'url generale, 
+se c'è la stringa di ricerca -> leggi i parametri e simula
+altrimenti carica i parametri di default e richiama l'url
+
+Poi ad ogni aggiornamento del form richiama l'url aggiornato
 
 ### future
 
