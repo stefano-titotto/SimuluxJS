@@ -5,14 +5,14 @@ class CParametri {
         this.L = 0;
         this.W = 0;
         this.DimTesta = 0;
-        this.RaggioInt = 0;
+        this.DiamInt = 0;
     }
 
-    aggiorna(form) {
-        this.L = parseInt(form.slabLengthInput.value);
-        this.W = parseInt(form.slabWidthInput.value);
-        this.DimTesta = parseInt(form.headSizeInput.value);
-        this.RaggioInt = parseInt(form.raggioIntInput.value);
+    aggiorna(formElems) {
+        this.L = parseInt(formElems.slabLengthInput.value);
+        this.W = parseInt(formElems.slabWidthInput.value);
+        this.DimTesta = parseInt(formElems.headSizeInput.value);
+        this.DiamInt = parseInt(formElems.diamIntInput.value);
     }
 }
 
@@ -43,13 +43,34 @@ function lastra_reset(lastra){
     }
 }
 
-function calcola(form){
-    params.aggiorna(form);
+function calcola(){
+    let myform = document.getElementById("formParametri");
+    params.aggiorna(myform.elements);
     let L = params.L;
     let W = params.W;
     let DimTesta = params.DimTesta;
-    let RaggioInt = params.RaggioInt;
+    let DiamInt = params.DiamInt;
     let centro = Math.trunc(DimTesta/2);
+    let ut = 3;
+    let x0 = -ut ;
+    let y0 = -DimTesta; // inizia con la testa tutta fuori dalla lastra
+    let Cx = W - DimTesta + 2 * ut;
+
+    // tempo di simulazione
+    let sg = 6;
+    let rpm = 330;
+    let dt = 60 / rpm /sg;
+
+    console.log("Intervallo di simulazione = "+(dt*1000).toFixed(1) + " ms")
+
+    let Vn = 1. *100/60; // Velocità y, velocità nastro in cm/s
+ 
+    // implementazione velocità y
+    let dy = Vn * dt; //incremento nel dt
+
+    let bpm = 12; // battute complete al minuto
+
+    let f = bpm/60; // frequenza oscillazione trave
 
     // Crea nuova lastra
     const lastra = new Array(W);
@@ -66,44 +87,24 @@ function calcola(form){
 	for (let i =0; i< DimTesta; i++){
 	    testa[i] = new Uint16Array(DimTesta);
 	    for(let j=0; j < DimTesta; j++){
-            testa[i][j] = (((i - centro)**2+(j - centro)**2)>(RaggioInt/2)**2) && (((i - centro)**2+(j - centro)**2) <= (DimTesta/2)**2);
+            testa[i][j] = (((i - centro)**2+(j - centro)**2)>(DiamInt/2)**2) && (((i - centro)**2+(j - centro)**2) <= (DimTesta/2)**2);
         }
 	}
-
-
-	// start time
-	const start = Date.now();
-	let cnt = 0;
-    let ut = 3;
-    let x0 = -ut ;
-    let y0 = -DimTesta; // inizia con la testa tutta fuori dalla lastra
-    let Cx = W - DimTesta + 2 * ut;
-
-    // tempo di simulazione
-    let sg = 6;
-    let rpm = 330;
-    let dt = 60 / rpm /sg;
-
-    console.log("Intervallo di simulazione = "+(dt*1000).toFixed(1) + " ms")
-
-    // implementazione velocità y
-    let Vn = 1. *100/60; // Velocità y, velocità nastro in cm/s
-    let dy = Vn * dt; //incremento nel dt
-
 
     // implementazione velocità x a rampa sinusoidale
     let X = [];
 
-    let bpm = 12; // battute complete al minuto
-
-    let f = bpm/60; // frequenza oscillazione trave
     let n = Math.round(1/f/dt); // lunghezza del vettore di posizione x
-    
     for (let k = 0; k < n; k++) {
         X.push( x0 + Math.round(Cx/2 * (1 - Math.cos(2*Math.PI*f*k*dt))));
     }
     
     console.log(X.length);
+
+    // simulazione
+	// start time
+	const start = Date.now();
+	let cnt = 0;
     let x = X[0];
     let y = y0;
 
@@ -113,14 +114,18 @@ function calcola(form){
         somma(lastra, testa, x, Math.round(y), L, W, DimTesta );
         x = X[k];
         y += dy;
+        cnt++;
     }
 	const elapsed = Date.now() - start;
 
 	// visualizza
-	console.log('Testa: ', DimTesta, ' cm, Tempo impiegato: '+ elapsed +' ms');
+	console.log('Tempo impiegato: '+ elapsed +' ms');
+    console.log('N. cicli di simulazione: '+ cnt +' cicli');
+    console.log('Performance : '+ Math.round(cnt*1000/elapsed) + ' cicli/s');
 
     delete testa;
     visualizza_mappa(lastra);	
+    console.log("calcolato!");
 }
 
 function visualizza_mappa(lastra){
@@ -136,7 +141,8 @@ function visualizza_mappa(lastra){
 
     Plotly.newPlot(MAPPA, dati);
     proporziona_finestra();
-;}
+    console.log("visualizzato!");
+}
 
 window.addEventListener('resize', proporziona_finestra);
 
@@ -156,4 +162,4 @@ function proporziona_finestra(){
   });
 };
 
-visualizza_mappa();
+calcola();

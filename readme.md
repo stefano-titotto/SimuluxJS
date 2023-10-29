@@ -42,3 +42,18 @@ oggetto "parametri" che viene aggiornato e passato a calcola alla pressione del 
 
 - implementare vel_x, vel_y
 - calcolare vettore X sinusoidale date le battute al minuto
+
+
+
+### 29-10-2023
+
+ creare oggetto con tutti i parametri
+ creazione URL+parametri
+ lettura parametri da URL
+
+
+### future
+
+implementare tango
+
+strumenti di analisi (media, dev_std, box_plot)

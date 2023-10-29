@@ -7,8 +7,7 @@
 </head>
 <body>
 <header>Simulux</header>
-    <div id="mappa" style="position: relative; width: 100%;"></div>
-    <form id="formParametri" name="formParametri" onsubmit="calcola()">
+    <form id="formParametri" name="formParametri">
     <table>
     <tr><td>larghezza (cm)</td><td><input type="number" id="slabWidthInput" value="160"></td></tr>
     <tr><td>lunghezza (cm)</td><td><input type="number" id="slabLengthInput"  value="320"></td></tr>
@@ -18,8 +17,23 @@
     <br>
     <input type="submit" value="Aggiorna">
     </form>
-    <br>    <button id="calcola" onclick="calcola()">Calcola()</button>
-    <script src="simulux.js"></script>
+
+    <script>
+        document.getElementById("formParametri").addEventListener("submit", function(event) {
+          event.preventDefault(); // Prevent the default form submission
+      
+          // Get the values entered by the user
+          var username = document.getElementById("username").value;
+          var email = document.getElementById("email").value;
+      
+          // Construct the URL with parameters
+          var url = "https://example.com/somepage?username=" + username + "&email=" + email;
+      
+          // Redirect the user to the constructed URL
+          window.location.href = url;
+        });
+      </script>
+      
 </body>
 </html>
 
