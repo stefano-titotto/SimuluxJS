@@ -4,11 +4,26 @@
     <meta charset="UTF-8">
      <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
     <title>Simulux</title>
+
+    <style>
+        .container {
+            display: flex;
+        }
+
+        #formParametri {
+            flex: 1;
+        }
+
+        #mappa {
+            flex-grow: 1;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 <header>Simulux</header>
-    <div id="mappa" style="position: relative; width: 100%;"></div>
-    <form id="formParametri" name="formParametri" onsubmit="">
+<div class="container">
+<form id="formParametri" name="formParametri" onsubmit="">
     <table id="myTable">
         <tbody id="tableBody">
         </tbody>    
@@ -25,6 +40,9 @@
     </label><br>
     <input type="submit" value="Aggiorna">
     </form>
+
+    <div id="mappa" style="position: relative; width: 100%;"></div>
+</div>
     <br> 
     <script src="simulux.js"></script>
 </body>

@@ -60,7 +60,7 @@ Poi ad ogni aggiornamento del form richiama l'url aggiornato
 Ok. Fatto
 ### future
 
-implementare tango
+- implementare tango
 
 implementare saturazione
 

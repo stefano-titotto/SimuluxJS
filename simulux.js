@@ -293,12 +293,23 @@ function costruisciForm(params){
     }
 }
 
-document.getElementById("formParametri").addEventListener("submit", function(event) {
+/* EVENT LISTENERS */
+const form = document.getElementById("formParametri")
+form.addEventListener("submit", function(event) {
     event.preventDefault(); // Prevent the default form submission
-    Parametri.aggiorna(this.elements);
+    aggiornaPagina();
+});
+
+for (bt of document.getElementsByName("oscTrave")){
+    bt.addEventListener("click", aggiornaPagina);
+}
+
+function aggiornaPagina(){
+    Parametri.aggiorna(form.elements);
     let searchString = Parametri.scriviUrlParams();
     window.location.search = searchString;
-});
+}
+
 /* 
 area che viene eseguita all'apertura della pagina
 
