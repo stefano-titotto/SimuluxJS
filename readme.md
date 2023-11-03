@@ -62,14 +62,14 @@ Ok. Fatto
 
 - implementare tango
 
-implementare saturazione
+- implementare saturazione
+
+bottoni per passaggi/rugosita lin/rugosita exp
 
 bottoni per incremento decremento
 
 grafico con scala assoluta da 0 a saturazione
 
-correggere proporzione schema
-
-ordinare la schermata
+- ordinare la schermata
 
 strumenti di analisi (media, dev_std, box_plot)

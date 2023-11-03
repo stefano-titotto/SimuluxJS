@@ -14,7 +14,8 @@ const parametriDefault = {
     "rpmTesta": 330,
     "bpmTrave": 12.5,
     "velNastro": 1.0,
-    "Corsa_Y" : 0,
+    "CorsaLong" : 5,
+    "Sat_rugosita": 200,
 }
 
 const parametriStep = {
@@ -27,7 +28,8 @@ const parametriStep = {
     "rpmTesta": 1,
     "bpmTrave": .1,
     "velNastro": .05,
-    "Corsa_Y": 1,
+    "CorsaLong": 1,
+    "Sat_rugosita": 10,
 }
 
 const modiDefault = {
@@ -206,12 +208,12 @@ function calcola(params, modes){
             break;
         case "otto":
             for (let k = 0; k < n; k++){
-                Y[k] = params.Corsa_Y /2 * Math.sin(4*Math.PI*f*k*dt);
+                Y[k] = params.CorsaLong /2 * Math.sin(4*Math.PI*f*k*dt);
             };
             break;
         case "ellisse":
             for (let k = 0; k< n; k++){
-                Y[k] = params.Corsa_Y / 2 * Math.sin(2*Math.PI*f*k*dt);
+                Y[k] = params.CorsaLong / 2 * Math.sin(2*Math.PI*f*k*dt);
             }
             break;
         default:
@@ -242,16 +244,24 @@ function calcola(params, modes){
     console.log('Performance : '+ Math.round(cnt*1000/elapsed) + ' cicli/s');
 
     delete testa;
-    visualizza_mappa(lastra,params.L, params.W);	
+    visualizza_mappa(lastra,params.L, params.W, params.Sat_rugosita);	
     console.log("calcolato!");
 }
 
-function visualizza_mappa(lastra, L, W){
-    MAPPA = document.getElementById("mappa");
 
+function visualizza_mappa(lastra, L, W, Sat){
+    MAPPA = document.getElementById("mappa");
+    // calcola matrice di rugosita con modello lineare
+    const mapLineare = n=> Math.min(1., 1.*n/Sat);
+    function mappaArray(uint16Array){
+        return Array.from(uint16Array,mapLineare)
+    }
+    const mappArray = lastra.map(mappaArray)
+    // gestisci opzioni di visualizzazione: passaggi, rugosita lineare, rugosità esponenziale
+    
     var dati = [
         {
-            z: lastra,
+            z: mappArray,
             type: 'heatmap',
             colorscale: 'Hot',
         }
