@@ -14,6 +14,7 @@ const parametriDefault = {
     "rpmTesta": 330,
     "bpmTrave": 12.5,
     "velNastro": 1.0,
+    "Corsa_Y" : 0,
 }
 
 const parametriStep = {
@@ -26,19 +27,31 @@ const parametriStep = {
     "rpmTesta": 1,
     "bpmTrave": .1,
     "velNastro": .05,
+    "Corsa_Y": 1,
+}
+
+const modiDefault = {
+    "oscTrave": "fissa", // otto, ellisse
 }
 
 class CParametri {
-    constructor (def){
+    constructor (paramDef, modiDef){
         this.params = {};
-        for (let key in def){
-            this.params[key] = def[key];
+        for (let key in paramDef){
+            this.params[key] = paramDef[key];
+        }
+        this.modes = {};
+        for (let key in modiDef){
+            this.modes[key] = modiDef[key];
         }
     }
 
     aggiorna(formElems) {
+        /*
+        Leggi i parametri numerici e aggiorna la lista this.params
+        */
         for (let k=0; k<formElems.length; k++){
-            if (formElems[k].id === ''){continue;}
+            if (formElems[k].id === ''){continue;} // salta i radio buttons che hanno name e non id
             let val = formElems[k].value;
             val.replace(',','.')
             // inserire controllo numero
@@ -47,9 +60,33 @@ class CParametri {
             }
             this.params[formElems[k].id] = val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val);
         }
-
+        this.modes.oscTrave = this.aggiornaOscTrave();
     }
+    aggiornaOscTrave(){
+        // leggi radio button oscillazione trave
+        // Get all radio buttons with the name "value"
+        const radioButtons = document.querySelectorAll('input[name="oscTrave"]');
+
+        let selectedValue = null;
+        // Iterate through the radio buttons
+        radioButtons.forEach(radioButton => {
+            if (radioButton.checked) {
+                selectedValue = radioButton.value;
+            }
+        });
+        return selectedValue;
+    }
+    impostaRadioB(val){
+        const valueRadio = document.querySelector('input[value="'+val+'"]');
+
+        // Set the "checked" property to true
+        valueRadio.checked = true;
+    }
+
     leggiUrl(){
+        /*
+        Aggiorna i parametri di simulazione in base alla stringa di sricerca del URL
+        */
         let ricerca = window.location.search.substring(1);
         console.log(ricerca);
         for(let elem of ricerca.split('&')){
@@ -58,15 +95,23 @@ class CParametri {
             let val = item[1];
             console.log(key + ": "+ val);
             // memorizza i valori con il tipo corretto: string, int o float
-            this.params[key] = isNaN(val) ? val : (val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val));
-
+            if (isNaN(val)){
+                this.impostaRadioB(val);
+                this.modes[key] = val;
+            }
+            else {
+                this.params[key] = (val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val));
+            }
         }
-        return this.params
     }
+
     scriviUrlParams(){
         let stringa = "?";
         for(let key in this.params){
             stringa += key + "=" + this.params[key] + "&";
+        }
+        for(let key in this.modes){
+            stringa += key + "=" + this.modes[key] + "&";
         }
         return stringa.slice(0,-1);
     }
@@ -97,7 +142,7 @@ function lastra_reset(lastra){
     }
 }
 
-function calcola(params){
+function calcola(params, modes){
     let L = params.L;
     let W = params.W;
     let DimTesta = params.DimTesta;
@@ -146,8 +191,33 @@ function calcola(params){
     for (let k = 0; k < n; k++) {
         X.push( x0 + Math.round(Cx/2 * (1 - Math.cos(2*Math.PI*f*k*dt))));
     }
-    
     console.log(X.length);
+
+    /*  implementazione Tango
+        costruisco un array Y[] che contiene il movimento longitudinale sinusoidale
+        da aggiungere a dy il movimento del nastro
+    */
+    let Y = new Float32Array(n);
+    switch (modes.oscTrave){
+        case "fissa":
+            for (let k =0; k<n; k++){
+                Y[k] = 0.0;
+            }
+            break;
+        case "otto":
+            for (let k = 0; k < n; k++){
+                Y[k] = params.Corsa_Y /2 * Math.sin(4*Math.PI*f*k*dt);
+            };
+            break;
+        case "ellisse":
+            for (let k = 0; k< n; k++){
+                Y[k] = params.Corsa_Y / 2 * Math.sin(2*Math.PI*f*k*dt);
+            }
+            break;
+        default:
+            alert("Modalità di oscillazione sconosciuta: " + modes.oscTrave)
+    }
+
 
     // simulazione
 	// start time
@@ -159,7 +229,7 @@ function calcola(params){
     
     for (let k=0; y < L; k = (k+1) % X.length){ //y < L+DimTesta
         //console.log("k = "+k+", x = "+ x + ", y = "+y)
-        somma(lastra, testa, x, Math.round(y), L, W, DimTesta );
+        somma(lastra, testa, x, Math.round(y+Y[k]), L, W, DimTesta );
         x = X[k];
         y += dy;
         cnt++;
@@ -188,13 +258,15 @@ function visualizza_mappa(lastra, L, W){
     ];
 
     Plotly.newPlot(MAPPA, dati);
-    proporziona_finestra(L,W);
+    proporziona_finestra();
     console.log("visualizzato!");
 }
 
 window.addEventListener('resize', proporziona_finestra);
 
-function proporziona_finestra(L, W){
+function proporziona_finestra(){
+    let L = Parametri.params.L;
+    let W = Parametri.params.W;
 // Retrieve the container element
   const chartContainer = document.getElementById('mappa');
 
@@ -219,7 +291,6 @@ function costruisciForm(params){
         cella = riga.insertCell();
         cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"></input>';
     }
-
 }
 
 document.getElementById("formParametri").addEventListener("submit", function(event) {
@@ -237,15 +308,15 @@ altrimenti -> leggi i parametri e simula
 
 Poi ad ogni aggiornamento del form aggiorna Url search e simulazione.
 */
-var Parametri = new CParametri({});
+var Parametri = new CParametri({},{});
 
 if (window.location.search === ''){
-    Parametri = new CParametri(parametriDefault);
+    Parametri = new CParametri(parametriDefault, modiDefault);
     let searchString = Parametri.scriviUrlParams();
     window.location.search = searchString;
 }
 else{
     Parametri.leggiUrl();
     costruisciForm(Parametri.params);
-    calcola(Parametri.params);
+    calcola(Parametri.params, Parametri.modes);
 }
