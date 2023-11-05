@@ -15,7 +15,7 @@ const parametriDefault = {
     "bpmTrave": 12.5,
     "velNastro": 1.0,
     "CorsaLong" : 5,
-    "Sat_rugosita": 200,
+    "Sat_lucido": 200,
 }
 
 const parametriStep = {
@@ -34,6 +34,7 @@ const parametriStep = {
 
 const modiDefault = {
     "oscTrave": "fissa", // otto, ellisse
+    "modGrafico": "passaggi", // lucido_lin
 }
 
 class CParametri {
@@ -62,12 +63,15 @@ class CParametri {
             }
             this.params[formElems[k].id] = val.indexOf('.') === -1 ? parseInt(val) : parseFloat(val);
         }
-        this.modes.oscTrave = this.aggiornaOscTrave();
+        // aggiorna le modalita di lavoro
+        for (let key in this.modes){
+            this.modes[key] = this.aggiornaModalita(key);
+        }
     }
-    aggiornaOscTrave(){
-        // leggi radio button oscillazione trave
-        // Get all radio buttons with the name "value"
-        const radioButtons = document.querySelectorAll('input[name="oscTrave"]');
+    aggiornaModalita(key){
+        // leggi radio button modalita di lavoro trave
+        // Get all radio buttons with the name "key"
+        const radioButtons = document.querySelectorAll('input[name="'+key+'"]');
 
         let selectedValue = null;
         // Iterate through the radio buttons
@@ -78,6 +82,7 @@ class CParametri {
         });
         return selectedValue;
     }
+
     impostaRadioB(val){
         const valueRadio = document.querySelector('input[value="'+val+'"]');
 
@@ -251,17 +256,24 @@ function calcola(params, modes){
 
 function visualizza_mappa(lastra, L, W, Sat){
     MAPPA = document.getElementById("mappa");
-    // calcola matrice di rugosita con modello lineare
-    const mapLineare = n=> Math.min(1., 1.*n/Sat);
-    function mappaArray(uint16Array){
-        return Array.from(uint16Array,mapLineare)
+
+    let mapArray = [];
+
+    // calcola matrice di lucido con modello lineare
+    if (Parametri.modes.modGrafico === 'lucido_lin'){
+        const mapLineare = n=> Math.min(1., 1.*n/Sat);
+        function mappaArray(uint16Array){
+            return Array.from(uint16Array,mapLineare)
+        }
+        mapArray = lastra.map(mappaArray);
     }
-    const mappArray = lastra.map(mappaArray)
-    // gestisci opzioni di visualizzazione: passaggi, rugosita lineare, rugosità esponenziale
+    else {
+        mapArray = lastra;
+    }
     
     var dati = [
         {
-            z: mappArray,
+            z: mapArray,
             type: 'heatmap',
             colorscale: 'Hot',
         }
@@ -294,28 +306,39 @@ function proporziona_finestra(){
 
 function costruisciForm(params){
     let TableBody = document.getElementById("tableBody");
+    // crea le righe e le 
     for (let key in params){
         let riga = TableBody.insertRow();
+
+        // Etichetta
         let cella = riga.insertCell();
         cella.innerHTML = key;
+
+        // Input Box
         cella = riga.insertCell();
         cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"></input>';
     }
 }
 
+
 /* EVENT LISTENERS */
 const form = document.getElementById("formParametri")
 form.addEventListener("submit", function(event) {
     event.preventDefault(); // Prevent the default form submission
+    Parametri.aggiorna(form.elements);
     aggiornaPagina();
 });
 
-for (bt of document.getElementsByName("oscTrave")){
-    bt.addEventListener("click", aggiornaPagina);
+for (let key in modiDefault){
+    for (bt of document.getElementsByName(key)){
+        bt.addEventListener("click", function(){
+            Parametri.aggiorna(form.elements);
+            aggiornaPagina();
+        });
+    }
 }
 
 function aggiornaPagina(){
-    Parametri.aggiorna(form.elements);
     let searchString = Parametri.scriviUrlParams();
     window.location.search = searchString;
 }
