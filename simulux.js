@@ -260,7 +260,7 @@ function visualizza_mappa(lastra, L, W, Sat){
     let mapArray = [];
 
     // calcola matrice di lucido con modello lineare
-    if (Parametri.modes.modGrafico === 'lucido_lin'){
+    if (Parametri.modes.modGrafico === 'lucidoLin'){
         const mapLineare = n=> Math.min(1., 1.*n/Sat);
         function mappaArray(uint16Array){
             return Array.from(uint16Array,mapLineare)
