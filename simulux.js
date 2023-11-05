@@ -29,7 +29,7 @@ const parametriStep = {
     "bpmTrave": .1,
     "velNastro": .05,
     "CorsaLong": 1,
-    "Sat_rugosita": 10,
+    "Sat_lucido": 10,
 }
 
 const modiDefault = {
@@ -249,19 +249,19 @@ function calcola(params, modes){
     console.log('Performance : '+ Math.round(cnt*1000/elapsed) + ' cicli/s');
 
     delete testa;
-    visualizza_mappa(lastra,params.L, params.W, params.Sat_rugosita);	
+    visualizza_mappa(lastra,params.L, params.W, params.Sat_lucido);	
     console.log("calcolato!");
 }
 
 
-function visualizza_mappa(lastra, L, W, Sat){
+function visualizza_mappa(lastra, L, W, saturazione){
     MAPPA = document.getElementById("mappa");
 
     let mapArray = [];
 
     // calcola matrice di lucido con modello lineare
     if (Parametri.modes.modGrafico === 'lucidoLin'){
-        const mapLineare = n=> Math.min(1., 1.*n/Sat);
+        const mapLineare = n => Math.min(1., 1.*n/saturazione);
         function mappaArray(uint16Array){
             return Array.from(uint16Array,mapLineare)
         }
