@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
      <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
     <title>Simulux</title>
+    <link rel="stylesheet" href="style.css">
 
     <style>
         .container {
@@ -19,17 +20,12 @@
             flex-grow: 1;
             width: 100%;
         }
-        header{
-            background-color: #9b0037; /* Red */
-            color: white; /* White text */
-            text-align: center; /* Center alignment */
-            padding: 20px; /* Padding */
-            font-size: 30px; /* Increase font size */
-        }
+
     </style>
 </head>
 <body>
-<header>Simulux</header>
+<header class="header">Simulux</header>
+<main class="main-content">
 <div class="container">
 <form id="formParametri" name="formParametri" onsubmit="">
     <table id="myTable">
@@ -56,17 +52,19 @@
     <br><br>
 
     <input type="submit" value="Aggiorna">
-    <br><br> 
+    <p class="main-description">
     Simulux: simulazione della distribuzione dei passaggi di abrasivo sulla
     superficie della lastra con teste SG6, SG8, SG10.
-    <br>
+    </p>
+    <p class="main-description">
     L'obbiettivo è di rappresentare l'omogeneità del lavoro delle teste.
-    <br><br>
-    Stefano Titotto
+    </p>
     </form>
 
     <div id="mappa" style="position: relative; width: 100%;"></div>
 </div>
+</main>
+<footer>Simulux è un programma in Javascript di Stefano Titotto</footer>
     <script src="simulux.js"></script>
 </body>
 </html>

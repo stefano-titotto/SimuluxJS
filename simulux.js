@@ -279,7 +279,18 @@ function visualizza_mappa(lastra, L, W, saturazione){
         }
     ];
 
-    Plotly.newPlot(MAPPA, dati);
+    Plotly.newPlot(MAPPA, {
+        data: [        
+            {
+            z: mapArray,
+            type: 'heatmap',
+            colorscale: 'Hot',
+        }],
+        layout: {
+            paper_bgcolor: "#abc",
+        },
+    }
+    );
     proporziona_finestra();
     console.log("visualizzato!");
 }
