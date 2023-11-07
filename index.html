@@ -12,11 +12,19 @@
 
         #formParametri {
             flex: 1;
+            padding-top: 100px;
         }
 
         #mappa {
             flex-grow: 1;
             width: 100%;
+        }
+        header{
+            background-color: #9b0037; /* Red */
+            color: white; /* White text */
+            text-align: center; /* Center alignment */
+            padding: 20px; /* Padding */
+            font-size: 30px; /* Increase font size */
         }
     </style>
 </head>
@@ -48,11 +56,17 @@
     <br><br>
 
     <input type="submit" value="Aggiorna">
+    <br><br> 
+    Simulux: simulazione della distribuzione dei passaggi di abrasivo sulla
+    superficie della lastra con teste SG6, SG8, SG10.
+    <br>
+    L'obbiettivo è di rappresentare l'omogeneità del lavoro delle teste.
+    <br><br>
+    Stefano Titotto
     </form>
 
     <div id="mappa" style="position: relative; width: 100%;"></div>
 </div>
-    <br> 
     <script src="simulux.js"></script>
 </body>
 </html>
