@@ -8,12 +8,12 @@ const parametriDefault = {
     "L": 320,
     "W": 160,
     "DimTesta": 56,
-    "Utensile": 15,
-    "Uscita": 3,
+    "Utensile": 17,
+    "Uscita": 1,
     "SG": 6,
     "rpmTesta": 330,
     "bpmTrave": 12.5,
-    "velNastro": 1.0,
+    "velNastro": .7,
     "CorsaLong" : 5,
     "Sat_lucido": 200,
     "Mandrini"  : 1,
@@ -155,6 +155,10 @@ function lastra_reset(lastra){
 
 function calcola(params, modes){
     let L = params.L;
+    let L2 = L;
+    if (params.Mandrini===2){
+        L2 += params.Interasse;
+    }
     let W = params.W;
     let DimTesta = params.DimTesta;
     let DiamInt = DimTesta - 2 * params.Utensile;
@@ -180,7 +184,7 @@ function calcola(params, modes){
     const lastra = new Array(W);
 
     for (let i = 0; i<W; i++){
-	    lastra[i] = new Uint16Array(L);
+	    lastra[i] = new Uint16Array(L2);
 	    lastra[i].fill(0);
 	}
 	// lastra_reset(lastra);
@@ -237,49 +241,27 @@ function calcola(params, modes){
     let x = X[0];
     let y = y0;
 
-    // primo mandrino
-    for (let k=0; y < L; k = (k+1) % X.length){ //y < L+DimTesta
+    // primo mandrino (simula una matrice più lunga per 2 mandrini)
+    for (let k=0; y < L2; k = (k+1) % X.length){ //y < L+DimTesta
         //console.log("k = "+k+", x = "+ x + ", y = "+y)
-        somma(lastra, testa, x, Math.round(y+Y[k]), L, W, DimTesta );
+        somma(lastra, testa, x, Math.round(y+Y[k]), L2, W, DimTesta );
         x = X[k];
         y += dy;
         cnt++;
     }
 
-    /* 
-        Secondo mandrino
-        - sommare (lastra da 0 a L-intx) + (lastra da intx a L)
-        - sommare (lastra da L-intx a L) + (lastra da (L-intx) % passo a (L-intx)%passo + intx
-
-        Alternativa
-        - creo una copia di lastra sfasata di un intx
-        - la sommo a lastra
-    let lastra2 = [];
+    /*
+        Secondo mandrino.
+        Sommo lastra a se stessa sfasata di un interasse
+    */
     if (params.Mandrini===2){
         let intx = params.Interasse;
-        let passo = Math.round(Vn / f);
-
         for (let row of lastra){
-            let row2 = new Uint16Array(L);
-            for (let i=0; i<L-intx; i++){
-                row2[i] = row[intx + i];
-            }
-            let offs = L % passo;
-            for (let i = 0; i<intx; i++){
-                row2[L-intx+i] = row[offs + i];
-            }
-            lastra2.push(row2);
-        } 
-
-        //somma
-        for(let r = 0; r < lastra.length; r++){
-            for (let i = 0; i<L; i++){
-                lastra[r][i] += lastra2[r][i];
+            for(let c = 0; c<L; c++){
+                row[c] += row[c+intx]
             }
         }
     }
-	*/
-
     // Fine simulazione
 
     const elapsed = Date.now() - start;
@@ -290,7 +272,7 @@ function calcola(params, modes){
     console.log('Performance : '+ Math.round(cnt*1000/elapsed) + ' cicli/s');
 
     delete testa;
-    visualizza_mappa(lastra,params.L, params.W, params.Sat_lucido);	
+    visualizza_mappa(lastra.map(i => i.slice(0,L)) ,params.L, params.W, params.Sat_lucido);	
     console.log("calcolato!");
 }
 

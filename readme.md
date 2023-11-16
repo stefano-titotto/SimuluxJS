@@ -66,8 +66,9 @@ Ok. Fatto
 
 - bottoni per passaggi/rugosita lin
 
-doppio mandrino (prolungare simulazione di un interasse)
+- doppio mandrino (prolungare simulazione di un interasse)
 
+radio box doppio mandrino
 grafico con scala assoluta da 0 a saturazione
 
 - ordinare la schermata
