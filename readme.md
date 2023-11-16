@@ -64,9 +64,9 @@ Ok. Fatto
 
 - implementare saturazione
 
-bottoni per passaggi/rugosita lin/rugosita exp
+- bottoni per passaggi/rugosita lin
 
-bottoni per incremento decremento
+doppio mandrino (prolungare simulazione di un interasse)
 
 grafico con scala assoluta da 0 a saturazione
 

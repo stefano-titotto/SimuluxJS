@@ -16,6 +16,8 @@ const parametriDefault = {
     "velNastro": 1.0,
     "CorsaLong" : 5,
     "Sat_lucido": 200,
+    "Mandrini"  : 1,
+    "Interasse" : 58,
 }
 
 const parametriStep = {
@@ -30,6 +32,8 @@ const parametriStep = {
     "velNastro": .05,
     "CorsaLong": 1,
     "Sat_lucido": 10,
+    "Mandrini"  : 1,
+    "Interasse" : 0,
 }
 
 const modiDefault = {
@@ -233,7 +237,7 @@ function calcola(params, modes){
     let x = X[0];
     let y = y0;
 
-    
+    // primo mandrino
     for (let k=0; y < L; k = (k+1) % X.length){ //y < L+DimTesta
         //console.log("k = "+k+", x = "+ x + ", y = "+y)
         somma(lastra, testa, x, Math.round(y+Y[k]), L, W, DimTesta );
@@ -241,7 +245,44 @@ function calcola(params, modes){
         y += dy;
         cnt++;
     }
-	const elapsed = Date.now() - start;
+
+    /* 
+        Secondo mandrino
+        - sommare (lastra da 0 a L-intx) + (lastra da intx a L)
+        - sommare (lastra da L-intx a L) + (lastra da (L-intx) % passo a (L-intx)%passo + intx
+
+        Alternativa
+        - creo una copia di lastra sfasata di un intx
+        - la sommo a lastra
+    let lastra2 = [];
+    if (params.Mandrini===2){
+        let intx = params.Interasse;
+        let passo = Math.round(Vn / f);
+
+        for (let row of lastra){
+            let row2 = new Uint16Array(L);
+            for (let i=0; i<L-intx; i++){
+                row2[i] = row[intx + i];
+            }
+            let offs = L % passo;
+            for (let i = 0; i<intx; i++){
+                row2[L-intx+i] = row[offs + i];
+            }
+            lastra2.push(row2);
+        } 
+
+        //somma
+        for(let r = 0; r < lastra.length; r++){
+            for (let i = 0; i<L; i++){
+                lastra[r][i] += lastra2[r][i];
+            }
+        }
+    }
+	*/
+
+    // Fine simulazione
+
+    const elapsed = Date.now() - start;
 
 	// visualizza
 	console.log('Tempo impiegato: '+ elapsed +' ms');
@@ -258,7 +299,6 @@ function visualizza_mappa(lastra, L, W, saturazione){
     MAPPA = document.getElementById("mappa");
 
     let mapArray = [];
-
     // calcola matrice di lucido con modello lineare
     if (Parametri.modes.modGrafico === 'lucidoLin'){
         const mapLineare = n => Math.min(1., 1.*n/saturazione);
@@ -285,6 +325,13 @@ function visualizza_mappa(lastra, L, W, saturazione){
             z: mapArray,
             type: 'heatmap',
             colorscale: 'Hot',
+            /*[
+                [0., 'black'],
+                [.33, 'red'],
+                [.67, 'yellow'],
+                [1.0, 'white'],
+            ],
+            */
         }],
         layout: {
             paper_bgcolor: "#abc",
