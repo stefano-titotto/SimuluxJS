@@ -58,19 +58,21 @@ altrimenti carica i parametri di default e richiama l'url
 Poi ad ogni aggiornamento del form richiama l'url aggiornato
 
 Ok. Fatto
-### future
 
-- implementare tango
+### ToDo List
 
-- implementare saturazione
++ implementare tango
 
-- bottoni per passaggi/rugosita lin
++ implementare saturazione
 
-- doppio mandrino (prolungare simulazione di un interasse)
++ bottoni per passaggi/rugosita lin
 
-radio box doppio mandrino
-grafico con scala assoluta da 0 a saturazione
++ doppio mandrino (prolungare simulazione di un interasse)
 
-- ordinare la schermata
++ ordinare la schermata
 
-strumenti di analisi (media, dev_std, box_plot)
+- radio box doppio mandrino
+
+- grafico con scala assoluta da 0 a saturazione
+
+- strumenti di analisi (media, dev_std, box_plot)
