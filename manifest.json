@@ -3,8 +3,14 @@
     "name": "Simulazione copertura lastra in lucidatura",
     "icons": [
       {
+        "src": "images/SimuluxLogo.png",
+        "type": "image/png",
+        "size": "16x16"
+      },
+      {
         "src": "images/SimuluxLogo01.png",
-        "type": "image/png"
+        "type": "image/png",
+        "size": "320x320"
       }
     ],
     "id": "simulux",
