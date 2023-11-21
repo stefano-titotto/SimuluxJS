@@ -7,7 +7,8 @@ const contentToCache = [
   './simulux.js',
   './service-worker.js',
   './style.css',
-  './images/SimuluxLogo01.png',
+  './images/SimuluxLogo01.png',  
+  './images/SimuluxLogo.png',
   "https://cdn.plot.ly/plotly-2.26.0.min.js",
 ];
 
