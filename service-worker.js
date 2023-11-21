@@ -1,13 +1,13 @@
 // Files to cache
 const cacheName = 'simuluxjs-cache';
 const appShellFiles = [
-  './index.html',
-  './manifest.json',
-  './register-sw.js',
-  './simulux.js',
-  './service-worker.js',
-  './style.css',
-  './images/SimuluxLogo01.png',
+  'index.html',
+  'manifest.json',
+  'register-sw.js',
+  'simulux.js',
+  'service-worker.js',
+  'style.css',
+  'images/SimuluxLogo01.png',
 ];
 
 self.addEventListener("install", (e) => {
