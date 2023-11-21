@@ -341,7 +341,7 @@ function costruisciForm(params){
 
         // Etichetta
         let cella = riga.insertCell();
-        cella.innerHTML = key;
+        cella.innerHTML = '<label for=\"'+key+'\">'+key+'</label>';
 
         // Input Box
         cella = riga.insertCell();
