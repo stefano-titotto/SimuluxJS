@@ -8,6 +8,7 @@ const contentToCache = [
   './service-worker.js',
   './style.css',
   './images/SimuluxLogo01.png',
+  "https://cdn.plot.ly/plotly-2.26.0.min.js",
 ];
 
 self.addEventListener("install", (e) => {
