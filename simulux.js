@@ -345,7 +345,7 @@ function costruisciForm(params){
 
         // Input Box
         cella = riga.insertCell();
-        cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"></input>';
+        cella.innerHTML = '<input type=\"number\" id=\"'+key+'\" value=\"'+params[key]+'\" step=\"'+parametriStep[key]+'\"> </input>';
     }
 }
 
