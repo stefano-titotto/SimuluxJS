@@ -1,6 +1,6 @@
 // Files to cache
 const cacheName = 'simuluxjs-cache';
-const appShellFiles = [
+const contentToCache = [
   './index.html',
   './manifest.json',
   './register-sw.js',
