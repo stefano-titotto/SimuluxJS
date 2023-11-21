@@ -302,20 +302,9 @@ function visualizza_mappa(lastra, L, W, saturazione){
     ];
 
     Plotly.newPlot(MAPPA, {
-        data: [        
-            {
-            z: mapArray,
-            type: 'heatmap',
-            colorscale: 'Hot',
-            /*[
-                [0., 'black'],
-                [.33, 'red'],
-                [.67, 'yellow'],
-                [1.0, 'white'],
-            ],
-            */
-        }],
+        data: dati,
         layout: {
+            title: "Grafico",
             paper_bgcolor: "#abc",
         },
     }

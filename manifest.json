@@ -1,0 +1,19 @@
+{
+    "short_name": "Simulux",
+    "name": "Simulazione copertura lastra in lucidatura",
+    "icons": [
+      {
+        "src": "images/images/SimuluxLogo01.png",
+        "type": "image/png"
+      }
+    ],
+    "id": "simulux",
+    "start_url": "https://stefano-titotto.github.io/SimuluxJS/",
+    "background_color": "#87CEFA",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#87CEFA",
+    "shortcuts": [
+   ],
+    "description": ""
+  }
